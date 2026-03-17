@@ -10,6 +10,8 @@ COPY app.py .
 
 COPY templates/ ./templates/
 
+COPY static/ ./static/
+
 COPY tests/ ./tests/
 
 EXPOSE 5000
