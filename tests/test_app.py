@@ -52,12 +52,13 @@ class TestAPIEndpoints:
     """Test Flask API endpoints"""
 
     def test_home_endpoint(self, client):
-        """Test the home endpoint"""
+        """Test the home endpoint (HTML response)"""
         response = client.get('/')
         assert response.status_code == 200
-        data = response.get_json()
-        assert 'message' in data
-        assert 'endpoints' in data
+        # HTML template ကို စစ်ဆေးရန် get_data(as_text=True) ကို သုံးရပါမည်
+        html_content = response.get_data(as_text=True)
+        # index.html ထဲတွင် 'Calculator' ဆိုသော စာသားပါဝင်ကြောင်း စစ်ဆေးခြင်း
+        assert "Calculator" in html_content
 
     def test_add_endpoint(self, client):
         """Test the /add endpoint"""
