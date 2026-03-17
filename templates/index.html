@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator - Student CI Project</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="calculator">
+            <h1>🧮 Calculator</h1>
+            <p class="subtitle">A Simple Python Web App for Learning CI/CD</p>
+            
+            <div class="form-group">
+                <label for="num1">Number 1</label>
+                <input type="number" id="num1" placeholder="Enter first number" step="any">
+            </div>
+            
+            <div class="form-group">
+                <label for="num2">Number 2</label>
+                <input type="number" id="num2" placeholder="Enter second number" step="any">
+            </div>
+            
+            <div class="operations">
+                <button class="btn btn-add" onclick="calculate('add')">➕ Add</button>
+                <button class="btn btn-subtract" onclick="calculate('subtract')">➖ Subtract</button>
+                <button class="btn btn-multiply" onclick="calculate('multiply')">✖️ Multiply</button>
+                <button class="btn btn-divide" onclick="calculate('divide')">➗ Divide</button>
+            </div>
+            
+            <div id="result" class="result">
+                Result: <span id="resultValue">-</span>
+            </div>
+            
+            <div id="error" class="error"></div>
+            
+            <div class="history">
+                <h3>📋 Calculation History</h3>
+                <ul id="historyList">
+                    <li>No calculations yet</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="info">
+            <h2>About This Project</h2>
+            <p>This is a teaching project that demonstrates:</p>
+            <ul>
+                <li><strong>Python & Flask</strong> - Web application framework</li>
+                <li><strong>REST API</strong> - Communication between frontend and backend</li>
+                <li><strong>HTML/CSS/JavaScript</strong> - User interface</li>
+                <li><strong>CI/CD Pipeline</strong> - Automated testing and deployment</li>
+                <li><strong>Unit Testing</strong> - Test-driven development</li>
+                <li><strong>Docker</strong> - Containerization</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
