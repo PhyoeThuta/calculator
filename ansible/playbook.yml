@@ -1,0 +1,21 @@
+---
+- name: Setup Docker and Deploy Calculator
+  hosts: servers
+  become: yes
+  tasks:
+    - name: Install Docker (Amazon Linux uses yum)
+      yum:
+        name: docker
+        state: latest
+
+    - name: Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull the Calculator Docker Image
+      command: docker pull phyoethutaa/student-calculator:latest
+
+    - name: Run the Calculator Container
+      command: docker run -d --name calculator-app -p 5000:5000 --restart always phyoethutaa/student-calculator:latest

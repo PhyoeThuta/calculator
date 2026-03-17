@@ -41,3 +41,28 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars*
+!terraform.tfvars.example
+
+# Secrets and Keys
+keys/
+*.key
+*.pem
+*.pub
+.env
+.env.local
+.env.*.local
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Ansible
+*.retry
+inventory/
