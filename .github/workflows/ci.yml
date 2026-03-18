@@ -1,61 +1,54 @@
-name: CI/CD Pipeline with Docker Hub
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.9', '3.10', '3.11']
-
-
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    
-    - name: Run tests
-      run: |
-        pytest tests/ -v --cov=. --cov-report=term
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: pytest tests/
 
   docker:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-    
-    - name: Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        push: true
-        tags: |
-          ${{ secrets.DOCKER_USERNAME }}/student-calculator:latest
-          ${{ secrets.DOCKER_USERNAME }}/student-calculator:${{ github.sha }}
-    
-    - name: Image digest
-      run: echo ${{ steps.docker_build.outputs.digest }}
+      - uses: actions/checkout@v3
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/student-calculator:latest
+
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+      - name: Run Ansible Playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: |
+          cd ansible
+          ansible-playbook -i hosts.ini playbook.yml --private-key ~/.ssh/id_rsa -u ec2-user

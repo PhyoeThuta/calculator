@@ -3,7 +3,7 @@
   hosts: servers
   become: yes
   tasks:
-    - name: Install Docker (Amazon Linux uses yum)
+    - name: Install Docker
       yum:
         name: docker
         state: latest
@@ -16,6 +16,10 @@
 
     - name: Pull the Calculator Docker Image
       command: docker pull phyoethutaa/student-calculator:latest
+
+    - name: Remove existing container (if any)
+      command: docker rm -f calculator-app
+      ignore_errors: yes
 
     - name: Run the Calculator Container
       command: docker run -d --name calculator-app -p 5000:5000 --restart always phyoethutaa/student-calculator:latest
