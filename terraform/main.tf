@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_vpc" "calc_vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
-  tags = { Name = "calculator-vpc" }
+  tags                 = { Name = "calculator-vpc" }
 }
 
 # ၂။ Internet Gateway ဆောက်ခြင်း (Internet ထွက်ရန်)
@@ -39,13 +39,13 @@ resource "aws_route_table_association" "calc_rta" {
 }
 
 resource "aws_instance" "calc_server" {
-  ami                    = "ami-011d19742f14ff9b8"
-  instance_type          = "t2.micro"
-  key_name               = "ec2-web"
-  
+  ami           = "ami-011d19742f14ff9b8"
+  instance_type = "t2.micro"
+  key_name      = "ec2-web"
+
   # 👇 ဒါက အရေးကြီးဆုံးပါ၊ ဆောက်ထားတဲ့ subnet ထဲမှာ ဆောက်ခိုင်းတာပါ
-  subnet_id              = aws_subnet.calc_subnet.id 
-  
+  subnet_id = aws_subnet.calc_subnet.id
+
   # 👇 Security Group ကို ID နဲ့ ချိတ်ရပါမယ်
   vpc_security_group_ids = [aws_security_group.calc_sg.id]
 
@@ -55,7 +55,7 @@ resource "aws_instance" "calc_server" {
 }
 
 resource "aws_security_group" "calc_sg" {
-  name = "calculator-security-group"
+  name   = "calculator-security-group"
   vpc_id = aws_vpc.calc_vpc.id
 
   ingress {
